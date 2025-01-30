@@ -3,39 +3,28 @@
 <head>
     <meta charset="utf-8" />
 <script>
-function getMobileOperatingSystem() {
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
 
-      // Windows Phone must come first because its UA also contains "Android"
-    if (/windows phone/i.test(userAgent)) {
-        return "Windows Phone";
+function redirectToPlatformLink() {
+    const iosLink = getQueryParam('iosLink');
+    if(iosLink == null) {alert("no ios link");}
+    const androidLink = getQueryParam('androidLink');
+    if(androidLink == null) {alert("no android link");}
+
+    const userAgent = navigator.userAgent;
+    console.log(userAgent)
+
+    if (/iPad|iPhone|iPod/.test(userAgent) && iosLink) {
+        window.location.href = iosLink;
+    } else {
+        window.location.href = androidLink;
     }
-
-    if (/android/i.test(userAgent)) {
-        return "Android";
-    }
-
-    // iOS detection from: http://stackoverflow.com/a/9039885/177710
-    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-        return "iOS";
-    }
-
-    return "unknown";
-}</script>
-
-<script>
-function DetectAndServe(){
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  let os = getMobileOperatingSystem();
-  if (os == "iOS") {
-    window.location.href = urlParams.get('iosLink'); 
-  } else {
-    window.location.href = urlParams.get('iosLink');
-  } 
 }
 </script>
 </head>
-<body onload="DetectAndServe()">
+<body onload="redirectToPlatformLink()">
 </body>
 </html>
