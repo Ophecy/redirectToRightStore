@@ -1,30 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="utf-8" />
-<script>
-function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
-
-function redirectToPlatformLink() {
-    const iosLink = getQueryParam('iosLink');
-    if(iosLink == null) {alert("no ios link");}
-    const androidLink = getQueryParam('androidLink');
-    if(androidLink == null) {alert("no android link");}
-
-    const userAgent = navigator.userAgent;
-    console.log(userAgent)
-
-    if (/iPad|iPhone|iPod/.test(userAgent) && iosLink) {
-        window.location.href = iosLink;
-    } else {
-        window.location.href = androidLink;
-    }
-}
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirection Mobile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #links-container {
+            display: none;
+        }
+        .button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .button img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
 </head>
-<body onload="redirectToPlatformLink()">
+<body>
+<h1>Choisissez votre plateforme</h1>
+<div id="links-container">
+    <button id="ios-button" class="button">
+        <img src="https://upload.wikimedia.org/wikipedia/fr/0/09/Logo_App_Store_d%27Apple.png" alt="Télécharger sur iOS">
+    </button>
+    <button id="android-button" class="button">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_Play_2022_icon.svg/928px-Google_Play_2022_icon.svg.png" alt="Télécharger sur Android">
+    </button>
+</div>
+
+<script>
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    function redirectToPlatformLink() {
+        const iosLink = getQueryParam('iosLink');
+        const androidLink = getQueryParam('androidLink');
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        if (/android/i.test(userAgent) && androidLink) {
+            window.location.href = androidLink;
+        } else if (/iPad|iPhone|iPod/.test(userAgent) && iosLink) {
+            window.location.href = iosLink;
+        } else {
+            document.getElementById('links-container').style.display = 'block';
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('ios-button').addEventListener('click', () => {
+            const iosLink = getQueryParam('iosLink');
+            if (iosLink) window.location.href = iosLink;
+        });
+
+        document.getElementById('android-button').addEventListener('click', () => {
+            const androidLink = getQueryParam('androidLink');
+            if (androidLink) window.location.href = androidLink;
+        });
+
+        redirectToPlatformLink();
+    });
+</script>
 </body>
 </html>
